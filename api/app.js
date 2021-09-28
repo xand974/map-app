@@ -12,7 +12,7 @@ const authRouter = require("$routes/auth");
 app.use(cors());
 app.use(helmet());
 app.use(morgan("common"));
-app.use("/api/auth", authRouter);
+app.use("/api/v1/auth", authRouter);
 
 app.listen(PORT, () => {
   console.log(`server is running on port ${PORT}`);
