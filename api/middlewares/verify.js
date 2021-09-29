@@ -25,7 +25,11 @@ module.exports = {
     }
   },
   verifyUserOrAdmin: (req, res, next) => {
-    if (req.user._id === req.params.id || req.user.isAdmin) {
+    if (
+      req.user._id === req.params.id ||
+      req.user.isAdmin ||
+      req.user.id === req.body.userId
+    ) {
       next();
     } else {
       return res.status(401).json("you are not allowed to do this task");

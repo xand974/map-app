@@ -4,9 +4,10 @@ const { generateToken } = require("../helpers/token");
 
 module.exports = {
   register: async (req, res) => {
-    const { username, password, city } = req.body;
+    console.log(req.body);
+    const { username, city, password } = req.body;
     try {
-      const user = await User.findOne({ username: req.body.username });
+      const user = await User.findOne({ username });
       user && res.status(401).json("user already exist");
 
       const salt = await bcrypt.genSalt(10);
