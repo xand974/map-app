@@ -17,4 +17,18 @@ module.exports = {
       return res.status(401).json("you are not authentificated");
     }
   },
+  verifyAdmin: (req, res, next) => {
+    if (req.user.isAdmin) {
+      next();
+    } else {
+      return res.status(401).json("you are not allowed to do this task");
+    }
+  },
+  verifyUserOrAdmin: (req, res, next) => {
+    if (req.user._id === req.params.id || req.user.isAdmin) {
+      next();
+    } else {
+      return res.status(401).json("you are not allowed to do this task");
+    }
+  },
 };

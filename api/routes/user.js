@@ -1,11 +1,11 @@
 const router = require("express").Router();
 const {
-  create,
+  getUserStatistics,
   update,
   delete: deleteOne,
   getAll,
   getOne,
-} = require("../controllers/pin");
+} = require("../controllers/user");
 
 const {
   verifyToken,
@@ -13,9 +13,9 @@ const {
   verifyUserOrAdmin,
 } = require("../middlewares/verify");
 
+router.get("/stats", [verifyToken, verifyAdmin], getUserStatistics);
 router.get("/one/:id", verifyToken, getOne);
 router.get("/all", [verifyToken, verifyAdmin], getAll);
-router.post("/add", verifyToken, create);
 router.put("/:id", [verifyToken, verifyUserOrAdmin], update);
 router.delete("/:id", [verifyToken, verifyUserOrAdmin], deleteOne);
 
