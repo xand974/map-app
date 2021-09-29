@@ -8,11 +8,13 @@ const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const authRouter = require("$routes/auth");
+const pinRouter = require("$routes/pin");
 
 app.use(cors());
 app.use(helmet());
 app.use(morgan("common"));
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/pin", pinRouter);
 
 app.listen(PORT, () => {
   console.log(`server is running on port ${PORT}`);

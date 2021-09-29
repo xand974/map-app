@@ -28,4 +28,26 @@ module.exports = {
       return res.status(500).json(err);
     }
   },
+  update: async (req, res) => {
+    try {
+      const savedPin = await Pin.findByIdAndUpdate(
+        req.params.id,
+        { $set: req.body },
+        { new: true }
+      );
+      !savedPin && res.status(404).json("pin not found");
+
+      return res.status(200).json(savedPin);
+    } catch (err) {
+      return res.status(500).json(err);
+    }
+  },
+  delete: async (req, res) => {
+    try {
+      await Pin.findByIdAndDelete(req.params.id);
+      return res.status(200).json("pin has been removed");
+    } catch (err) {
+      return res.status(500).json(err);
+    }
+  },
 };
