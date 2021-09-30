@@ -28,7 +28,7 @@ module.exports = {
     if (
       req.user._id === req.params.id ||
       req.user.isAdmin ||
-      req.user.id === req.body.userId
+      req.user._id === req.body.userId
     ) {
       next();
     } else {
