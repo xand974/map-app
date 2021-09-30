@@ -2,6 +2,8 @@ import { useState } from "react";
 import MapBoxGL, { Marker, Popup } from "react-map-gl";
 import styled from "styled-components";
 import { PushPin, StarOutlined } from "@mui/icons-material";
+import { useEffect } from "react";
+import api from "config/api";
 
 const Container = styled.div`
   height: 100vh;
@@ -50,6 +52,7 @@ const Info = styled.p`
   font-size: 12px;
 `;
 export default function Home() {
+  const [pins, setPins] = useState([]);
   const [viewport, setViewport] = useState({
     width: "100vw",
     height: "100vh",
@@ -57,6 +60,23 @@ export default function Home() {
     longitude: 3.876716,
     zoom: 8,
   });
+
+  useEffect(() => {
+    const fetchPins = async () => {
+      try {
+        const res = api.get("/pins/all", {
+          headers: {
+            token:
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTU0YjQ2MDIxZDYwNmI0N2Y5MDkyZjQiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2MzMwMzE3NTYsImV4cCI6MTYzMzExODE1Nn0.eA7IJsqukwo7domVdN8p2FYMHt4Fot1AcrllxgYOLLU",
+          },
+        });
+        setPins(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchPins();
+  }, []);
 
   return (
     <Container>
@@ -66,44 +86,57 @@ export default function Home() {
         mapboxApiAccessToken={process.env.REACT_APP_MAPBOX}
         mapStyle="mapbox://styles/xand974/cku5ipsl12agz18l6u2rvopzc"
       >
-        <Marker longitude={3} latitude={43} offsetLeft={-20} offsetTop={-10}>
-          <PushPin style={{ color: "crimson", fontSize: viewport.zoom * 3 }} />
-        </Marker>
-        <Popup
-          longitude={3}
-          latitude={43}
-          anchor="left"
-          closeButton={true}
-          closeOnClick={false}
-        >
-          <PopUpContainer>
-            <Title>Arceau de Montpellier</Title>
-            <Wrapper>
-              <MiniCard>
-                <Label>Description</Label>
-                <Info>Un endroit assez spécial où vit du monde</Info>
-              </MiniCard>
-              <MiniCard>
-                <Label>Created By</Label>
-                <Info>Alexandre</Info>
-              </MiniCard>
-              <MiniCard>
-                <Label>Rating</Label>
-                <Info>
-                  <StarOutlined />
-                  <StarOutlined />
-                  <StarOutlined />
-                  <StarOutlined />
-                  <StarOutlined />
-                </Info>
-              </MiniCard>
-              <MiniCard>
-                <Label>When ?</Label>
-                <Info>20 mins ago</Info>
-              </MiniCard>
-            </Wrapper>
-          </PopUpContainer>
-        </Popup>
+        {pins.map((pin) => {
+          return (
+            <>
+              <Marker
+                longitude={pin.longitude}
+                latitude={pin.latitude}
+                offsetLeft={-20}
+                offsetTop={-10}
+              >
+                <PushPin
+                  style={{ color: "crimson", fontSize: viewport.zoom * 3 }}
+                />
+              </Marker>
+              <Popup
+                longitude={3}
+                latitude={43}
+                anchor="left"
+                closeButton={true}
+                closeOnClick={false}
+              >
+                <PopUpContainer>
+                  <Title>{pin.title}</Title>
+                  <Wrapper>
+                    <MiniCard>
+                      <Label>Description</Label>
+                      <Info>Un endroit assez spécial où vit du monde</Info>
+                    </MiniCard>
+                    <MiniCard>
+                      <Label>Created By</Label>
+                      <Info>{pin.username}</Info>
+                    </MiniCard>
+                    <MiniCard>
+                      <Label>Rating</Label>
+                      <Info>
+                        <StarOutlined />
+                        <StarOutlined />
+                        <StarOutlined />
+                        <StarOutlined />
+                        <StarOutlined />
+                      </Info>
+                    </MiniCard>
+                    <MiniCard>
+                      <Label>When ?</Label>
+                      <Info>{pin.createdAt}</Info>
+                    </MiniCard>
+                  </Wrapper>
+                </PopUpContainer>
+              </Popup>
+            </>
+          );
+        })}
       </MapBoxGL>
     </Container>
   );
