@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { PushPin } from "@mui/icons-material";
 
 const Container = styled.div`
   height: 100vh;
@@ -22,7 +21,6 @@ export default function Register() {
     <Container>
       <Card>
         <Form></Form>
-        <PushPin />
       </Card>
     </Container>
   );
