@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { RoomOutlined, StarOutlined } from "@mui/icons-material";
 import { useEffect } from "react";
 import api from "config/api";
+import { useHistory } from "react-router";
 
 const Container = styled.div`
   height: 100vh;
@@ -56,9 +57,45 @@ const Description = styled.span`
   margin-left: 20px;
 `;
 
+const PopUpCreate = styled.div`
+  width: 200px;
+  height: 250px;
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+`;
+const Input = styled.input`
+  outline: none;
+  border: none;
+  margin: 10px 0;
+  color: gray;
+`;
+
+const Button = styled.button`
+  border: 1px solid #1a2637;
+  background: none;
+  border-radius: 5px;
+  color: #1a2637;
+  padding: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease-in;
+  &:hover {
+    background: #1a2637;
+    color: white;
+  }
+`;
+
 export default function Home() {
   const [pinSelected, setPinSelected] = useState(null);
   const [pins, setPins] = useState([]);
+  const [coordinate, setCoordinate] = useState(null);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [rating, setRating] = useState(0);
+  const history = useHistory();
+
   const [viewport, setViewport] = useState({
     width: "100vw",
     height: "100vh",
@@ -82,6 +119,34 @@ export default function Home() {
     };
     fetchPins();
   }, []);
+  const handleCreate = (e) => {
+    const [lon, lat] = e.lngLat;
+    setCoordinate((prev) => {
+      return {
+        ...prev,
+        longitude: lon,
+        latitude: lat,
+      };
+    });
+  };
+
+  const handleClick = async () => {
+    try {
+      await api.post(
+        "/pins/add",
+        { ...coordinate, title, description, rating, username: "alexandre" },
+        {
+          headers: {
+            token:
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTU0YjQ2MDIxZDYwNmI0N2Y5MDkyZjQiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2MzMwMzE3NTYsImV4cCI6MTYzMzExODE1Nn0.eA7IJsqukwo7domVdN8p2FYMHt4Fot1AcrllxgYOLLU",
+          },
+        }
+      );
+      history.push("/");
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <Container>
@@ -90,6 +155,8 @@ export default function Home() {
         onViewportChange={(nextViewport) => setViewport(nextViewport)}
         mapboxApiAccessToken={process.env.REACT_APP_MAPBOX}
         mapStyle="mapbox://styles/xand974/cku5ipsl12agz18l6u2rvopzc"
+        // transitionDuration="300"
+        onDblClick={handleCreate}
       >
         {pins.map((pin, key) => {
           return (
@@ -114,7 +181,7 @@ export default function Home() {
               </Marker>
               {pinSelected === pin._id && (
                 <Popup
-                  tipSize="20px"
+                  tipSize={20}
                   key={key}
                   longitude={pin.longitude}
                   latitude={pin.latitude}
@@ -155,6 +222,48 @@ export default function Home() {
             </>
           );
         })}
+        {coordinate && (
+          <>
+            <Marker
+              longitude={coordinate.longitude}
+              latitude={coordinate.latitude}
+            >
+              <RoomOutlined />
+            </Marker>
+            <Popup
+              longitude={coordinate.longitude}
+              latitude={coordinate.latitude}
+              anchor="right"
+              closeButton={true}
+              closeOnClick={false}
+              onClose={() => setPinSelected(null)}
+            >
+              <PopUpCreate>
+                <Form onSubmit={(e) => e.preventDefault()}>
+                  <Title>Create a pin</Title>
+                  <Label>Title</Label>
+                  <Input
+                    placeholder="plage de l'ermitage"
+                    onChange={(e) => setTitle(e.target.value)}
+                  />
+                  <Label>Description</Label>
+                  <Input
+                    placeholder="j'aime bien cette plage, endroit où on peut se détendre"
+                    onChange={(e) => setDescription(e.target.value)}
+                  />
+                  <Label>Rating</Label>
+                  <Input
+                    onChange={(e) => setRating(e.target.value)}
+                    type="number"
+                    max={7}
+                    placeholder="notez cette endroit sur 7"
+                  />
+                  <Button onClick={handleClick}>Créer</Button>
+                </Form>
+              </PopUpCreate>
+            </Popup>
+          </>
+        )}
         );
       </MapBoxGL>
     </Container>
