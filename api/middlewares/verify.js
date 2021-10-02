@@ -21,7 +21,9 @@ module.exports = {
     if (req.user.isAdmin) {
       next();
     } else {
-      return res.status(401).json("you are not allowed to do this task");
+      return res
+        .status(401)
+        .json("you are not allowed to do this task [not admin]");
     }
   },
   verifyUserOrAdmin: (req, res, next) => {

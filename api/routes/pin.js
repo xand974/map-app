@@ -7,14 +7,10 @@ const {
   getOne,
 } = require("../controllers/pin");
 
-const {
-  verifyToken,
-  verifyAdmin,
-  verifyUserOrAdmin,
-} = require("../middlewares/verify");
+const { verifyToken, verifyUserOrAdmin } = require("../middlewares/verify");
 
 router.get("/one/:id", verifyToken, getOne);
-router.get("/all", [verifyToken, verifyAdmin], getAll);
+router.get("/all", [verifyToken], getAll);
 router.post("/add", verifyToken, create);
 router.put("/:id", [verifyToken, verifyUserOrAdmin], update);
 router.delete("/:id", [verifyToken, verifyUserOrAdmin], deleteOne);
