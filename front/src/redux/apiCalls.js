@@ -10,3 +10,11 @@ export const login = async (user, dispatch) => {
     dispatch(loginFailure());
   }
 };
+
+export const register = async (user) => {
+  try {
+    await api.post("/auth/register", user);
+  } catch (err) {
+    console.log(err);
+  }
+};

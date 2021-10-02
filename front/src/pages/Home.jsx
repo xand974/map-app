@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import api from "config/api";
 import { useHistory } from "react-router";
 import { useSelector } from "react-redux";
+import * as timeago from "timeago.js";
 
 const Container = styled.div`
   height: 100vh;
@@ -215,7 +216,7 @@ export default function Home() {
                     </MiniCard>
                     <MiniCard>
                       <Label>When ?</Label>
-                      <Info>{pin.createdAt || "10 mins ago"}</Info>
+                      <Info>{timeago.format(pin.createdAt)}</Info>
                     </MiniCard>
                   </PopUpContainer>
                 </Popup>

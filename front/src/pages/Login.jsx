@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { useHistory } from "react-router";
 import { login } from "redux/apiCalls";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
   height: 100vh;
@@ -53,6 +54,9 @@ const Button = styled.button`
   margin: 20px;
   cursor: pointer;
 `;
+const Text = styled.p`
+  color: gray;
+`;
 
 export default function Login() {
   const [userInput, setUserInput] = useState({});
@@ -93,6 +97,15 @@ export default function Login() {
             onChange={handleChange}
           />
           <Button onClick={handleClick}>Se connecter</Button>
+          <Text>
+            Pas encore de compte ? Créez en un{" "}
+            <Link
+              style={{ color: "white", textDecoration: "none" }}
+              to="/register"
+            >
+              ici
+            </Link>{" "}
+          </Text>
         </Form>
       </Card>
     </Container>
