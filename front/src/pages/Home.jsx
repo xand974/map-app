@@ -5,6 +5,7 @@ import { RoomOutlined, StarOutlined } from "@mui/icons-material";
 import { useEffect } from "react";
 import api from "config/api";
 import { useHistory } from "react-router";
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
   height: 100vh;
@@ -95,6 +96,7 @@ export default function Home() {
   const [description, setDescription] = useState("");
   const [rating, setRating] = useState(0);
   const history = useHistory();
+  const user = useSelector((state) => state.user.user);
 
   const [viewport, setViewport] = useState({
     width: "100vw",
@@ -108,8 +110,7 @@ export default function Home() {
       try {
         const res = await api.get("/pins/all", {
           headers: {
-            token:
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTU0YjQ2MDIxZDYwNmI0N2Y5MDkyZjQiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2MzMwMzE3NTYsImV4cCI6MTYzMzExODE1Nn0.eA7IJsqukwo7domVdN8p2FYMHt4Fot1AcrllxgYOLLU",
+            token: user.accessToken,
           },
         });
         setPins(res.data);
@@ -118,7 +119,8 @@ export default function Home() {
       }
     };
     fetchPins();
-  }, []);
+  }, [user]);
+
   const handleCreate = (e) => {
     const [lon, lat] = e.lngLat;
     setCoordinate((prev) => {
@@ -137,8 +139,7 @@ export default function Home() {
         { ...coordinate, title, description, rating, username: "alexandre" },
         {
           headers: {
-            token:
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTU0YjQ2MDIxZDYwNmI0N2Y5MDkyZjQiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2MzMwMzE3NTYsImV4cCI6MTYzMzExODE1Nn0.eA7IJsqukwo7domVdN8p2FYMHt4Fot1AcrllxgYOLLU",
+            token: user.accessToken,
           },
         }
       );

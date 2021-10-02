@@ -16,11 +16,32 @@ const Form = styled.form`
   flex-direction: column;
 `;
 
+const Label = styled.label`
+  font-size: 20px;
+  color: gray;
+`;
+
+const Input = styled.input`
+  outline: none;
+  padding: 10px;
+`;
+const Button = styled.button`
+  padding: 10px;
+  background-color: #aaebbeae;
+  border-radius: 10px;
+`;
+
 export default function Register() {
   return (
     <Container>
       <Card>
-        <Form></Form>
+        <Form>
+          <Label>Username</Label>
+          <Input placeholder="john" />
+          <Label>Password</Label>
+          <Input placeholder="..." type="password" />
+          <Button>Créer un compte</Button>
+        </Form>
       </Card>
     </Container>
   );
